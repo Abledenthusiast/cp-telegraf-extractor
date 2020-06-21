@@ -10,7 +10,7 @@ def main():
         post_to_service(result)
 
 def select_prev_metrics():
-    query = 'select * FROM ping WHERE time > now() - 1m GROUP BY url;'
+    query = 'select * FROM ping WHERE time > now() - 24h GROUP BY url;'
     result_items = list(client.query(query).items())
     # nested tuples are used here, so: list of metrics -> tuple of (ping, 'url' : url)
     result_dict = { result_items[i][0][1]['url'] : list(result_items[i][1]) for i in range(0, len(result_items))}
