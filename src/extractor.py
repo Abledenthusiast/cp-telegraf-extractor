@@ -10,16 +10,21 @@ def main():
         post_to_service(result)
 
 def select_prev_metrics():
-    query = 'select "average_response_ms" FROM ping WHERE time > now() - 24h GROUP BY url;'
-    return client.query(query)
+    query = 'select * FROM ping WHERE time > now() - 1m GROUP BY url;'
+    result_items = list(client.query(query).items())
+    # nested tuples are used here, so: list of metrics -> tuple of (ping, 'url' : url)
+    result_dict = { result_items[i][0][1]['url'] : list(result_items[i][1]) for i in range(0, len(result_items))}
+    return result_dict
+
 
 
 def post_to_service(metrics):
-    data = {'storageGroupName':'ping', 'name':'avg-resp-ms-' + time.strftime()}
-    res = requests.post('https://centralperk-dot-centralperk.appspot.com/api/save', data=data)
-    print(res)
+    for url,stats in metrics.items():
+        data = {'storageGroupName':'ping', 'name':url + '-avg-resp-ms-' + time.strftime('%Y-%b-%d'), 'data':stats}
+        res = requests.post('https://centralperk-dot-centralperk.appspot.com/api/save', json=data)
+        print(res)
 
-if __name__ == '__Main__':
+if __name__ == '__main__':
     print('starting')
     main()
     print('completed')
