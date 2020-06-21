@@ -4,7 +4,8 @@ import time
 import schedule
 
 client = InfluxDBClient(host='localhost', port=8086, username='root', password='root', database='telegraf')
-def main():
+def extract():
+    print(time.now())
     result = select_prev_metrics()
     if result is not None:
         post_to_service(result)
@@ -26,5 +27,7 @@ def post_to_service(metrics):
 
 if __name__ == '__main__':
     print('starting')
-    main()
-    print('completed')
+    schedule.every().hour.do(extract)
+    while True:
+        schedule.run_pending()
+        time.sleep(600) # wait ten minutes
