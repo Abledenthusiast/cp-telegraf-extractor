@@ -16,7 +16,7 @@ def extract():
         print(exc)
 
 def select_prev_metrics():
-    query = 'select * FROM ping WHERE time > now() - 6h GROUP BY url;'
+    query = 'select average_response_ms FROM ping WHERE time > now() - 6h GROUP BY url;'
     result_items = list(client.query(query).items())
     # nested tuples are used here, so: list of metrics -> tuple of (ping, 'url' : url)
     result_dict = { result_items[i][0][1]['url'] : list(result_items[i][1]) for i in range(0, len(result_items))}
@@ -24,7 +24,7 @@ def select_prev_metrics():
 
 def post_to_service(metrics):
     for url,stats in metrics.items():
-        data = {'storageGroupName':'ping', 'name':url + '-avg-resp-ms-' + time.strftime('%Y-%b-%d'), 'data':stats}
+        data = {'storageGroupName':'ping', 'name':url + '-avg-resp-ms', 'data':stats}
         res = requests.post('https://centralperk-dot-centralperk.appspot.com/api/save', json=data)
         print(res)
 
