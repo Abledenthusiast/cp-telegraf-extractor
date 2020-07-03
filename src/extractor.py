@@ -26,10 +26,8 @@ def select_prev_metrics():
 def post_to_service(metrics):
     for url,stats in metrics.items():
         data = {'storageGroupName':'ping', 'name':url + '-avg-resp-ms', 'data':stats}
-        res = requests.post('https://centralperk-dot-centralperk.appspot.com/api/save', json=data)
 
         Producer.publish(data)
-        print(res)
 
 if __name__ == '__main__':
     print('starting')
