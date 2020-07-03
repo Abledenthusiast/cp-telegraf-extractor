@@ -1,3 +1,4 @@
 requests
 influxdb
 schedule
+google-cloud-pubsub
