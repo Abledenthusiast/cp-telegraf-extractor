@@ -25,7 +25,7 @@ def select_prev_metrics():
 
 def post_to_service(metrics):
     for url,stats in metrics.items():
-        data = {'storageGroupName':'ping', 'name':url + '-avg-resp-ms', 'data':stats}
+        data = {'storageGroupName':'ping', 'name':url + '-avg-resp-ms', 'data':stats[0]}
 
         Producer.publish(data)
 
